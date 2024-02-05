@@ -45,3 +45,23 @@ func (h Handler) HandleCreateTransacao(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(novaTransacaoResponse)
 }
+
+func (h Handler) HandleGetExtrato(c *fiber.Ctx) error {
+	clienteId, err := strconv.Atoi(c.Params("id"))
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	extratoResponse, err := h.repo.ObterExtrato(clienteId)
+
+	if err != nil {
+		if err == repositories.ErrClienteNotFound {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": err.Error()})
+		}
+
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(extratoResponse)
+}

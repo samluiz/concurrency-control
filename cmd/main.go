@@ -8,17 +8,21 @@ import (
 )
 
 func main() {
-
+	// Opening the database connection
 	db, err := config.OpenDB(); if err != nil {
 		panic(err)
 	}
+	// Defer the database connection close if error occurs
 	defer db.Close()
 
+	// Creating the repository and handler
 	repo := repositories.NewRepo(db)
-
 	handlers	:= handlers.NewHandler(repo)
 
+	// Creating the Fiber app
 	app := fiber.New()
 
+	// Routes
 	app.Post("/clientes/:id/transacoes", handlers.HandleCreateTransacao)
+	app.Get("/clientes/:id/extrato", handlers.HandleGetExtrato)
 }
