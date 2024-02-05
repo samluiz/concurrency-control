@@ -16,7 +16,7 @@ func NewHandler(repo *repositories.Repo) *Handler {
 	return &Handler{repo}
 }
 
-func (h Handler) handleCreateTransacao(c *fiber.Ctx) error {
+func (h Handler) HandleCreateTransacao(c *fiber.Ctx) error {
 	clienteId, err := strconv.Atoi(c.Params("id"))
 
 	if err != nil {
