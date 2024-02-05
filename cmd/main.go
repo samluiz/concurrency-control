@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/samluiz/concurrency-control/internal/db/config"
 	"github.com/samluiz/concurrency-control/internal/db/repositories"
@@ -10,6 +12,7 @@ import (
 func main() {
 	// Opening the database connection
 	db, err := config.OpenDB(); if err != nil {
+		log.Fatal(err)
 		panic(err)
 	}
 	// Defer the database connection close if error occurs
@@ -25,4 +28,6 @@ func main() {
 	// Routes
 	app.Post("/clientes/:id/transacoes", handlers.HandleCreateTransacao)
 	app.Get("/clientes/:id/extrato", handlers.HandleGetExtrato)
+
+	app.Listen(":3000")
 }

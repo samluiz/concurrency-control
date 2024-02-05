@@ -55,7 +55,7 @@ func (r *Repo) CriarTransacao(transacao t.TransacaoRequest, clienteId int) (*t.N
 		operation = "+"
 	}
 
-	result, err := tx.ExecContext(ctx, "UPDATE clientes SET saldo = saldo " + operation + " $1 WHERE id = $2 FOR UPDATE", transacao.Valor, clienteId)
+	result, err := tx.ExecContext(ctx, "UPDATE clientes SET saldo = saldo " + operation + " $1 WHERE id = $2", transacao.Valor, clienteId)
 
 	if err != nil {
 		return nil, err
@@ -73,9 +73,9 @@ func (r *Repo) CriarTransacao(transacao t.TransacaoRequest, clienteId int) (*t.N
 		return nil, err
 	}
 	
-	if (novaTransacaoResponse.Limite < -novaTransacaoResponse.Saldo) {
-		return nil, ErrInconsistentSaldo
-	}
+	if (novaTransacaoResponse.Saldo < -novaTransacaoResponse.Limite) {
+    return nil, ErrInconsistentSaldo
+}
 
 	err = tx.Commit()
 

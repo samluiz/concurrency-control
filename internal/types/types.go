@@ -1,16 +1,16 @@
 package types
 
 type Cliente struct {
-	ID     int
-	Limite int
-	Saldo  int
+	ID     int `db:"id"`
+	Limite int `db:"limite"`
+	Saldo  int `db:"saldo"`
 }
 
 type Transacao struct {
-	ID          int
-	Valor       int
-	Tipo        string
-	Descricao   string
-	RealizadaEm string
-	IdCliente   int
+	ID          int    `db:"id"`
+	Valor       int    `db:"valor"`
+	Tipo        string `db:"tipo"`
+	Descricao   string `db:"descricao"`
+	RealizadaEm string `db:"realizada_em"`
+	IdCliente   int    `db:"id_cliente"`
 }

@@ -9,11 +9,17 @@ import (
 )
 
 func OpenDB() (*sqlx.DB, error) {
-	connStr := "user=username dbname=mydb sslmode=disable"
+	connStr := "host=localhost port=2345 user=postgres password=postgres dbname=bank sslmode=disable"
 
 	db, err := sqlx.Connect("postgres", connStr)
 	if err != nil {
 		return nil, fmt.Errorf("error opening connection to the database: %v", err)
+	}
+
+	err = initTables(db.DB)
+
+	if err != nil {
+		return nil, fmt.Errorf("error initializing tables: %v", err)
 	}
 
 	return db, nil
@@ -24,7 +30,7 @@ func initTables(db *sql.DB) error {
 		CREATE TABLE IF NOT EXISTS clientes (
 			id SERIAL PRIMARY KEY,
 			limite INT,
-			saldo INT
+			saldo INT DEFAULT 0
 		);
 	`)
 
@@ -32,7 +38,14 @@ func initTables(db *sql.DB) error {
 		return fmt.Errorf("error creating clientes table: %v", err)
 	}
 
-	_, err = db.Exec(`
+	var count int
+	err = db.QueryRow("SELECT COUNT(*) FROM clientes WHERE id BETWEEN 1 AND 5").Scan(&count)
+	if err != nil {
+		return fmt.Errorf("error checking existing rows: %v", err)
+	}
+
+	if count == 0 {
+		_, err = db.Exec(`
 			INSERT INTO clientes (limite) 
 			VALUES 
 			(1000 * 100),
@@ -40,10 +53,10 @@ func initTables(db *sql.DB) error {
 			(10000 * 100),
 			(100000 * 100),
 			(5000 * 100);
-	`)
-
-	if err != nil {
-		return fmt.Errorf("error inserting initial values in clientes table: %v", err)
+		`)
+		if err != nil {
+			return fmt.Errorf("error inserting initial values in clientes table: %v", err)
+		}
 	}
 
 	_, err = db.Exec(`
