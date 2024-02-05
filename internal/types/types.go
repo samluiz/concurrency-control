@@ -2,13 +2,13 @@ package types
 
 type Cliente struct {
 	ID     int
-	Limite float64
-	Saldo  float64
+	Limite int
+	Saldo  int
 }
 
 type Transacao struct {
 	ID          int
-	Valor       float64
+	Valor       int
 	Tipo        string
 	Descricao   string
 	RealizadaEm string

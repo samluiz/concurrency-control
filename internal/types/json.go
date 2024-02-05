@@ -3,26 +3,26 @@ package types
 import "time"
 
 type TransacaoRequest struct {
-	Valor     float64 `json:"valor"`
+	Valor     int `json:"valor"`
 	Tipo      string `json:"tipo"`
 	Descricao string `json:"descricao"`
 }
 
 type TransacaoResponse struct {
-	Valor     float64 `json:"valor"`
+	Valor     int `json:"valor"`
 	Tipo      string `json:"tipo"`
 	Descricao string `json:"descricao"`
 	RealizadaEm string `json:"realizada_em"`
 }
 
 type NovaTransacaoResponse struct {
-	Limite float64 `json:"limite"`
-	Saldo  float64 `json:"saldo"`
+	Limite int `json:"limite"`
+	Saldo  int `json:"saldo"`
 }
 
 type SaldoResponse struct {
-	Total       float64 `json:"total"`
-	Limite      float64 `json:"limite"`
+	Total       int `json:"total"`
+	Limite      int `json:"limite"`
 	DataExtrato time.Time `json:"data_extrato"`
 }
 
