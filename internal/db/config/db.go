@@ -22,5 +22,8 @@ func OpenDB() (*sqlx.DB, error) {
 		return nil, fmt.Errorf("error opening connection to the database: %v", err)
 	}
 
+	db.DB.SetMaxOpenConns(30)
+	db.DB.SetMaxIdleConns(10)
+
 	return db, nil
 }

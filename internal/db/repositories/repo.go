@@ -10,9 +10,14 @@ import (
 	t "github.com/samluiz/concurrency-control/internal/types"
 )
 
+func NewValidationError(message string) error {
+	return errors.New(message)
+}
+
 var (
 	ErrClienteNotFound = errors.New("Cliente não encontrado.")
 	ErrInconsistentSaldo = errors.New("Saldo inconsistente.")
+	ErrValidation error
 )
 
 type Repo struct {
@@ -42,17 +47,23 @@ func (r *Repo) CriarTransacao(transacao t.TransacaoRequest, clienteId int) (*t.N
 		return nil, ErrClienteNotFound
 	}
 
+	if len(transacao.Descricao) > 10 {
+		ErrValidation = NewValidationError("Erro de validação dtions.")
+		return nil, ErrValidation
+	}
+
 	now := time.Now()
 	
 	tx.MustExec("INSERT INTO transacoes (valor, tipo, descricao, realizada_em, id_cliente) VALUES ($1, $2, $3, $4, $5)", transacao.Valor, transacao.Tipo, transacao.Descricao, now, clienteId)
-	
+
 	var operation string
 
 	if transacao.Tipo == "d" {
 		operation = "-"
-	}
-	if transacao.Tipo == "c" {
+	} else if transacao.Tipo == "c" {
 		operation = "+"
+	} else {
+		return nil, NewValidationError("Tipo de transação inválido.")
 	}
 
 	result, err := tx.ExecContext(ctx, "UPDATE clientes SET saldo = saldo " + operation + " $1 WHERE id = $2", transacao.Valor, clienteId)
