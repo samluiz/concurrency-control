@@ -14,12 +14,12 @@ jobs:
     - uses: actions/checkout@v3
     - name: Build the Docker image
       working-directory: ./scripts
-      run: docker build -t samluiz/concurrency-control -f Dockerfile ../
+      run: docker build -t concurrency-control -f Dockerfile ../ && docker tag concurrency-control samluiz/concurrency-control
       
   push:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Build the Docker image
+    - name: Push to DockerHub
       working-directory: ./scripts
       run: docker push samluiz/concurrency-control
