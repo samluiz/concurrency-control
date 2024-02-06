@@ -12,13 +12,13 @@ jobs:
     runs-on: ubuntu-latest
     environment: docker-ci
     steps:
-    - uses: docker/login-action@v3
+    - uses: actions/checkout@v3
     - name: Login to Docker Hub
+    - uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
         
-    - uses: actions/checkout@v3
     - name: Build the Docker image and Push to DockerHub
       working-directory: ./scripts
       run: |
