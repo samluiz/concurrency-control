@@ -79,7 +79,7 @@ func (r *Repo) CriarTransacao(transacao t.TransacaoRequest, clienteId int) (*t.N
 		return nil, err
 	}
 	
-	if (novaTransacaoResponse.Saldo < -novaTransacaoResponse.Limite) {
+	if (novaTransacaoResponse.Saldo < novaTransacaoResponse.Limite * -1) {
     return nil, ErrInconsistentSaldo
 }
 
