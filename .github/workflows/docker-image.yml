@@ -8,18 +8,18 @@ on:
 
 jobs:
 
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
+    environment: docker-ci
     steps:
+    - uses: docker/login-action@v3
+    - name: Login to Docker Hub
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
     - uses: actions/checkout@v3
-    - name: Build the Docker image
+    - name: Build the Docker image and Push to DockerHub
       working-directory: ./scripts
-      run: docker build -t concurrency-control -f Dockerfile ../ && docker tag concurrency-control samluiz/concurrency-control
-      
-  push:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v3
-    - name: Push to DockerHub
-      working-directory: ./scripts
-      run: docker push samluiz/concurrency-control
+      run: |
+        docker build -t samluiz/concurrency-control -f Dockerfile ../
+        docker push samluiz/concurrency-control
