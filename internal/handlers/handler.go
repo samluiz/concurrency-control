@@ -29,6 +29,10 @@ func (h Handler) HandleCreateTransacao(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
 	}
 
+	if len(transacaoRequest.Descricao) > 10 {
+		return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{"error": "Erro de validação: O campo descrição deve ter no máximo 10 caracteres."})
+	}
+
 	novaTransacaoResponse, err := h.repo.CriarTransacao(transacaoRequest, clienteId)
 
 	if err != nil {
@@ -39,11 +43,7 @@ func (h Handler) HandleCreateTransacao(c *fiber.Ctx) error {
 		if err == repositories.ErrInconsistentSaldo {
 			return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{"error": err.Error()})
 		}
-
-		if err == repositories.ErrValidation {
-			return c.Status(fiber.StatusUnprocessableEntity).JSON(fiber.Map{"error": err.Error()})
-		}
-
+		
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 

@@ -29,6 +29,16 @@ func NewRepo(db *sqlx.DB) *Repo {
 }
 
 func (r *Repo) CriarTransacao(transacao t.TransacaoRequest, clienteId int) (*t.NovaTransacaoResponse, error) {
+	var operation string
+
+	if transacao.Tipo == "d" {
+		operation = "-"
+	} else if transacao.Tipo == "c" {
+		operation = "+"
+	} else {
+		return nil, NewValidationError("Tipo de transação inválido.")
+	}
+	
 	ctx := context.Background()
 	tx, err := r.db.BeginTxx(ctx, &sql.TxOptions{Isolation: sql.LevelReadCommitted})
 
@@ -36,7 +46,7 @@ func (r *Repo) CriarTransacao(transacao t.TransacaoRequest, clienteId int) (*t.N
 		return nil, err
 	}
 	defer tx.Rollback()
-	
+
 	clienteExists, err := clienteExists(tx, ctx, clienteId)
 
 	if err != nil {
@@ -47,24 +57,9 @@ func (r *Repo) CriarTransacao(transacao t.TransacaoRequest, clienteId int) (*t.N
 		return nil, ErrClienteNotFound
 	}
 
-	if len(transacao.Descricao) > 10 {
-		ErrValidation = NewValidationError("Erro de validação dtions.")
-		return nil, ErrValidation
-	}
-
 	now := time.Now()
 	
 	tx.MustExec("INSERT INTO transacoes (valor, tipo, descricao, realizada_em, id_cliente) VALUES ($1, $2, $3, $4, $5)", transacao.Valor, transacao.Tipo, transacao.Descricao, now, clienteId)
-
-	var operation string
-
-	if transacao.Tipo == "d" {
-		operation = "-"
-	} else if transacao.Tipo == "c" {
-		operation = "+"
-	} else {
-		return nil, NewValidationError("Tipo de transação inválido.")
-	}
 
 	result, err := tx.ExecContext(ctx, "UPDATE clientes SET saldo = saldo " + operation + " $1 WHERE id = $2", transacao.Valor, clienteId)
 
