@@ -12,7 +12,7 @@ type TransacaoResponse struct {
 	Valor     int `json:"valor" db:"valor"`
 	Tipo      string `json:"tipo" db:"tipo"`
 	Descricao string `json:"descricao" db:"descricao"`
-	RealizadaEm string `json:"realizada_em" db:"realizada_em"`
+	RealizadaEm time.Time `json:"realizada_em" db:"realizada_em"`
 }
 
 type NovaTransacaoResponse struct {
