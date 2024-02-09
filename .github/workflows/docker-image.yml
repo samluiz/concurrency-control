@@ -20,7 +20,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
         
     - name: Build the Docker image and Push to DockerHub
-      working-directory: ./scripts
+      working-directory: ./scripts/docker
       run: |
-        docker build -t samluiz/concurrency-control -f Dockerfile ../
+        docker build -t samluiz/concurrency-control -f Dockerfile ../..
         docker push samluiz/concurrency-control
