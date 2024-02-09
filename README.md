@@ -2,9 +2,9 @@ Aplicação que lida com controle de concorrência em operações de crédito e 
 
 # Stack:
 Go + Fiber + Pgx
-&nbsp;
+
 Postgres
-&nbsp;
+
 Nginx
 
 ![Gatling Report](https://github.com/samluiz/concurrency-control/blob/main/static/img/gatling-report.png)
