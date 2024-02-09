@@ -5,6 +5,6 @@ Go + Fiber + Pgx
 Postgres
 Nginx
 
-!(Gatling Report)[https://github.com/samluiz/concurrency-control/blob/main/static/img/gatling-report.png]
+![Gatling Report](https://github.com/samluiz/concurrency-control/blob/main/static/img/gatling-report.png)
 
 Inspiração: https://github.com/zebaroni/rinha-backend-2024-q1
